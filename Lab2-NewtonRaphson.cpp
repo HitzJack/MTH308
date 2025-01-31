@@ -21,7 +21,7 @@ void Solve()
     vector < array < double , 4 >> TABLE; // to store all the needed values to make a table
     while(abs(F(xm_old)) > epsilon_max){ // while loop breaks when number of iterations exceed 10
     	double x1 = x0 - F(x0) / f(x0);
-        TABLE.push_back({iterations , x0 , x1 , F(x1)});
+        TABLE.push_back({iterations , x0 , x1 , abs(F(x1))});
         xm_old = x1;
         iterations++;
         x0 = x1;
