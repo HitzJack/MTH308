@@ -22,19 +22,19 @@ void Solve(){
     // returns the value of function at a given point x;
     auto F = [&](double x) -> double{
         double v = 0.0;
-        // v += 2 * x * x * x - 2.5 * x - 5;
-        double pp = (98 * 1.0) / x;
-        v += 35 - (9.8 * x * (1 - pow(M_E, -pp))) / 14.0;
+        v += 2 * x * x * x - 2.5 * x - 5;
+        // double pp = (98 * 1.0) / x;
+        // v += 35 - (9.8 * x * (1 - pow(M_E, -pp))) / 14.0;
         return v;
     };
-    double xl = 0.0; // lower bound 
-    double xu = 100.0; // upper bound
+    double xl = 1.0; // lower bound 
+    double xu = 2.0; // upper bound
     double iterations = 0; // to keep count of number of iterations
     double xm_old = -1; // to keep track the last value of m ie xm_old
     double ea = 100; // the absolute relative error
     vector < array < double , 6 >> TABLE; // to store all the needed values to make a table
     while(abs(F(xm_old)) > epsilon_max){ // while loop breaks when number of iterations exceed 10
-        double xm = (xl * abs(F(xu)) + xu * abs(F(xl))) / (abs(F(xl)) + abs(F(xu)));
+        double xm = (xl * F(xu) - xu * F(xl)) / (F(xu) - F(xl));
         double z = F(xl) * F(xm); // z checks the condition to whether switch xl to xm or xm to xl;
         double xm_new = xm;
         if(xm_old == -1){
