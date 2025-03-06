@@ -1,1 +1,91 @@
 Lab assignments of MTH308
+#include <iostream>
+
+using namespace std;
+
+#define N 3 // Matrix size
+
+// Function to calculate determinant of a 3x3 matrix
+double determinant(double matrix[N][N]) {
+    return matrix[0][0] * (matrix[1][1] * matrix[2][2] - matrix[1][2] * matrix[2][1])
+         - matrix[0][1] * (matrix[1][0] * matrix[2][2] - matrix[1][2] * matrix[2][0])
+         + matrix[0][2] * (matrix[1][0] * matrix[2][1] - matrix[1][1] * matrix[2][0]);
+}
+
+// Function to compute cofactor matrix
+void cofactorMatrix(double matrix[N][N], double cofactors[N][N]) {
+    cofactors[0][0] =  (matrix[1][1] * matrix[2][2] - matrix[1][2] * matrix[2][1]);
+    cofactors[0][1] = -(matrix[1][0] * matrix[2][2] - matrix[1][2] * matrix[2][0]);
+    cofactors[0][2] =  (matrix[1][0] * matrix[2][1] - matrix[1][1] * matrix[2][0]);
+
+    cofactors[1][0] = -(matrix[0][1] * matrix[2][2] - matrix[0][2] * matrix[2][1]);
+    cofactors[1][1] =  (matrix[0][0] * matrix[2][2] - matrix[0][2] * matrix[2][0]);
+    cofactors[1][2] = -(matrix[0][0] * matrix[2][1] - matrix[0][1] * matrix[2][0]);
+
+    cofactors[2][0] =  (matrix[0][1] * matrix[1][2] - matrix[0][2] * matrix[1][1]);
+    cofactors[2][1] = -(matrix[0][0] * matrix[1][2] - matrix[0][2] * matrix[1][0]);
+    cofactors[2][2] =  (matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0]);
+}
+
+// Function to compute adjugate (transpose of cofactor matrix)
+void adjugateMatrix(double cofactors[N][N], double adj[N][N]) {
+    // Transpose of cofactor matrix
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            adj[i][j] = cofactors[j][i];
+        }
+    }
+}
+
+// Function to calculate inverse
+bool inverseMatrix(double matrix[N][N], double inverse[N][N]) {
+    double det = determinant(matrix);
+    
+    if (det == 0) {
+        cout << "Matrix is singular, cannot find inverse.\n";
+        return false;
+    }
+
+    double cofactors[N][N], adj[N][N];
+
+    cofactorMatrix(matrix, cofactors);
+    adjugateMatrix(cofactors, adj);
+
+    // Multiply adjugate matrix by 1/det(A)
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            inverse[i][j] = adj[i][j] / det;
+        }
+    }
+    return true;
+}
+
+// Function to display a matrix
+void displayMatrix(double matrix[N][N]) {
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            cout << matrix[i][j] << "\t";
+        }
+        cout << endl;
+    }
+}
+
+int main() {
+    double matrix[N][N] = {
+        {2, -1, 1},
+        {1,  3, 2},
+        {1, -1, 2}
+    };
+
+    double inverse[N][N];
+
+    cout << "Original Matrix:\n";
+    displayMatrix(matrix);
+
+    if (inverseMatrix(matrix, inverse)) {
+        cout << "\nInverse Matrix:\n";
+        displayMatrix(inverse);
+    }
+
+    return 0;
+}
