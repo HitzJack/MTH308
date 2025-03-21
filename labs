@@ -3,6 +3,7 @@ Lab assignments of MTH308
 
 using namespace std;
 
+
 #define N 3 // Matrix size
 
 // Function to calculate determinant of a 3x3 matrix
@@ -89,3 +90,100 @@ int main() {
 
     return 0;
 }
+
+#include <iostream>
+#include <vector>
+#include <cmath>
+
+using namespace std;
+
+typedef vector<vector<double>> Matrix;
+typedef vector<double> Vector;
+
+// Function to perform LU decomposition
+void luDecomposition(const Matrix &A, Matrix &L, Matrix &U, int n) {
+    for (int i = 0; i < n; i++) {
+        for (int j = i; j < n; j++) {
+            U[i][j] = A[i][j];
+            for (int k = 0; k < i; k++) {
+                U[i][j] -= L[i][k] * U[k][j];
+            }
+        }
+        for (int j = i; j < n; j++) {
+            if (i == j)
+                L[i][j] = 1;
+            else {
+                L[j][i] = A[j][i];
+                for (int k = 0; k < i; k++) {
+                    L[j][i] -= L[j][k] * U[k][i];
+                }
+                L[j][i] /= U[i][i];
+            }
+        }
+    }
+}
+
+// Forward substitution to solve Ly = b
+Vector forwardSubstitution(const Matrix &L, const Vector &b, int n) {
+    Vector y(n, 0);
+    for (int i = 0; i < n; i++) {
+        y[i] = b[i];
+        for (int j = 0; j < i; j++) {
+            y[i] -= L[i][j] * y[j];
+        }
+    }
+    return y;
+}
+
+// Backward substitution to solve Ux = y
+Vector backwardSubstitution(const Matrix &U, const Vector &y, int n) {
+    Vector x(n, 0);
+    for (int i = n - 1; i >= 0; i--) {
+        x[i] = y[i];
+        for (int j = i + 1; j < n; j++) {
+            x[i] -= U[i][j] * x[j];
+        }
+        x[i] /= U[i][i];
+    }
+    return x;
+}
+
+// Function to solve Ax = b using LU decomposition
+Vector solveLU(const Matrix &A, const Vector &b, int n) {
+    Matrix L(n, Vector(n, 0)), U(n, Vector(n, 0));
+    luDecomposition(A, L, U, n);
+    
+    Vector y = forwardSubstitution(L, b, n);
+    Vector x = backwardSubstitution(U, y, n);
+    
+    // Print L matrix
+    cout << "L matrix:" << endl;
+    for (const auto &row : L) {
+        for (double val : row) cout << val << " ";
+        cout << endl;
+    }
+    
+    // Print U matrix
+    cout << "U matrix:" << endl;
+    for (const auto &row : U) {
+        for (double val : row) cout << val << " ";
+        cout << endl;
+    }
+    
+    return x;
+}
+
+int main() {
+    Matrix A = {{4, 3}, {6, 3}};
+    Vector b = {10, 12};
+    int n = A.size();
+
+    Vector x = solveLU(A, b, n);
+    
+    cout << "Solution x:" << endl;
+    for (double val : x) cout << val << " ";
+    cout << endl;
+
+    return 0;
+}
+
