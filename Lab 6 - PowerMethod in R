@@ -1,0 +1,53 @@
+function main()
+    A = [3, 0, 0;
+        -4, 6, 2;
+        16, -15, -5];
+
+    maxIter = 1000;
+    tol = 1e-6;
+
+    [lambda, eigenvector] = powerMethod(A, maxIter, tol);
+
+    fprintf('Dominant Eigenvalue: %.6f\n', lambda);
+    fprintf('Corresponding Eigenvector: [ ');
+    fprintf('%.6f ', eigenvector);
+    fprintf(']\n');
+end
+
+function result = matVecMul(A, x)
+    result = A * x;
+end
+
+function mx = normInf(x)
+    mx = max(abs(x));
+end
+
+function C = vecSub(A, B)
+    C = A - B;
+end
+
+function [eigen, x] = powerMethod(A, maxIter, tol)
+    n = size(A, 1);
+    x = zeros(n, 1);
+    x(1) = 1;
+    x(2) = 0.5;
+    x(3) = 0.25;
+
+    eigen = 0.0;
+
+    for k = 1:maxIter
+        y = matVecMul(A, x);
+        y_max = normInf(y);
+        y = y / y_max;
+        fprintf('%.6f ', y);
+        fprintf('\n');
+        z = vecSub(y, x);
+
+        if normInf(z) < tol
+            break;
+        end
+
+        x = y;
+        eigen = y_max;
+    end
+end
