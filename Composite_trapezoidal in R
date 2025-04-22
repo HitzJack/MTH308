@@ -1,0 +1,38 @@
+% -------------------------------------------------------------------------
+% Composite Trapezoidal Rule for Numerical Integration
+% Approximates the integral of f(x) = sin(x) over the interval [a, b]
+% -------------------------------------------------------------------------
+
+% Define the function to integrate
+f = @(x) sin(x);        % Function: sin(x)
+
+% Integration limits
+a = 0;                  % Lower limit
+b = pi;                 % Upper limit
+
+% Number of subintervals
+n = 10;
+
+% Step size
+h = (b - a) / n;
+
+% Generate x values
+x = a:h:b;
+
+% Evaluate function values at all x points
+y = f(x);
+
+% Apply the Composite Trapezoidal Rule:
+% I = h/2 * [f(x0) + 2*f(x1) + 2*f(x2) + ... + 2*f(x_{n-1}) + f(xn)]
+
+% First and last terms
+endpoints_sum = y(1) + y(end);
+
+% Middle terms (multiplied by 2)
+middle_sum = 2 * sum(y(2:end-1));
+
+% Final integral approximation
+I = (h / 2) * (endpoints_sum + middle_sum);
+
+% Display the result
+fprintf('Approximate value of the integral of sin(x) from %.2f to %.2f is: %.6f\n', a, b, I);
