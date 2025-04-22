@@ -1,0 +1,35 @@
+function rungeKuttaRK4_example()
+    % Initial conditions
+    x0 = 0.0;
+    y0 = 1.0;
+    h = 0.1;
+    x_target = 0.2;
+
+    % Call the RK4 solver
+    result = rungeKuttaRK4(x0, y0, h, x_target);
+
+    fprintf('\nApproximate value of y at x = %.2f is %.6f\n', x_target, result);
+end
+
+% Define the ODE: dy/dx = (x - y) / 2
+function dy = f(x, y)
+    dy = (x - y) / 2.0;
+end
+
+% Runge-Kutta 4th Order Method
+function y = rungeKuttaRK4(x0, y0, h, x_target)
+    x = x0;
+    y = y0;
+
+    while x < x_target
+        k1 = h * f(x, y);
+        k2 = h * f(x + h/2.0, y + k1/2.0);
+        k3 = h * f(x + h/2.0, y + k2/2.0);
+        k4 = h * f(x + h, y + k3);
+
+        y = y + (k1 + 2*k2 + 2*k3 + k4) / 6.0;
+        x = x + h;
+
+        fprintf('x = %.2f, y = %.6f\n', x, y);
+    end
+end
